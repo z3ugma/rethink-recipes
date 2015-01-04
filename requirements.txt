@@ -1,0 +1,5 @@
+flask
+rethinkdb
+colorific
+translitcodec
+flask-wtf
