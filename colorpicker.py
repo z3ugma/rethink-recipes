@@ -225,6 +225,20 @@ def edit(query):
 
         return redirect(url_for('recipe', query=slug))
 
+@app.route('/<query>/delete', methods = ['GET'])
+def delete(query):
+    recipe = list(r.table('recipes').filter({'slug': query}).run(g.rdb_conn))
+
+    if recipe:
+        recipe = recipe[0]
+    else:
+        abort(404)
+
+    id = recipe['id']
+
+    r.table('recipes').get(id).delete().run(g.rdb_conn)
+    return redirect(url_for('index'))
+
 
 if __name__ == '__main__':
     app.run(debug = True, host='0.0.0.0')
