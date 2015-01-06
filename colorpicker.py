@@ -51,12 +51,17 @@ from flask.ext.wtf import Form
 from wtforms.fields import TextField
 from wtforms.validators import Required
 from wtforms.fields import StringField
+from wtforms.fields import BooleanField
 from wtforms.widgets import TextArea
 
 class RecipeForm(Form):
     title = TextField('title', validators = [Required()])
     ingredients = StringField(u'Ingredients', widget=TextArea(),validators = [Required()])
     directions = StringField(u'directions', widget=TextArea(), validators = [Required()])
+
+class DeleteForm(Form):
+    deleterecipe = BooleanField('deleterecipe')
+
 
 
 from flask import *
@@ -225,19 +230,29 @@ def edit(query):
 
         return redirect(url_for('recipe', query=slug))
 
-@app.route('/<query>/delete', methods = ['GET'])
+@app.route('/<query>/delete', methods = ['GET', 'POST'])
 def delete(query):
+    form = DeleteForm()
     recipe = list(r.table('recipes').filter({'slug': query}).run(g.rdb_conn))
-
     if recipe:
         recipe = recipe[0]
     else:
         abort(404)
 
-    id = recipe['id']
+    if request.method == 'GET':
 
-    r.table('recipes').get(id).delete().run(g.rdb_conn)
-    return redirect(url_for('index'))
+        return render_template("delete.html", query=query, recipe=recipe, form=form)
+
+    if request.method == 'POST':
+        if 'deleterecipe' in request.form:
+
+            id = recipe['id']
+
+            r.table('recipes').get(id).delete().run(g.rdb_conn)
+            return redirect(url_for('index'))
+        else:
+            flash("Are you sure? Check the box")
+            return render_template("delete.html", query=query, recipe=recipe, form=form)
 
 
 if __name__ == '__main__':

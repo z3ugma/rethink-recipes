@@ -14,11 +14,32 @@
 
 	<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Ubuntu">
 
-	<style>
-	body {
-		font-family: 'Ubuntu', serif;
+	<style>  body {
+    font-family: 'Ubuntu', serif;
+    background-color: #A66FA6;
 
-	}
+}
+
+    .panel-primary{
+    		border-color: #609732;
+        font-size:150%;
+
+    }
+
+  .panel-primary > .panel-heading {
+		background-color: #609732;
+		border-color: #609732;
+
+  }
+
+  a {
+    color: #370037;
+  }
+
+   a:focus, a:hover {
+    color: #370037;
+  }
+
 	textarea {
 		-webkit-box-sizing: border-box;
 		-moz-box-sizing: border-box;
@@ -37,7 +58,14 @@
 
 			<div class="row">
 				<div class="col-md-12">
-					<h1>Edit {{recipe.title}}</h1>
+					  <div class="header" style="background-color: #370037; color: #A66FA6; margin-bottom: 20px; padding: 20px 10px;">
+  <h1>Edit {{recipe.title}}
+
+    <a href="/" style = "margin-left: 15px;" class="btn btn-default btn-lg pull-right" role="button">Home</a>
+    <a href="/{{recipe.slug}}" class="btn btn-default btn-lg pull-right" role="button">Recipe</a>
+
+</h1></div>
+
 
 					<div class="panel panel-primary">
 						<div class="panel-heading">

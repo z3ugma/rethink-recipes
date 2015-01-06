@@ -53,8 +53,8 @@ img { width: 100%;  }
 <div class="col-md-12">
   <div class="header" style="background-color: rgb{{avg[0]}}; color: rgb{{avg[3]}}; margin-bottom: 20px; padding: 20px 10px;">
   <h1>{{title}}   
-
-    <a href="{{url_for('edit' , query=query) }}" style="margin-left: 15px;" class="btn btn-default btn-lg pull-right" role="button">Edit</a>
+<a href="{{url_for('delete' , query=query) }}" class="btn btn-default btn-lg pull-right" role="button">Delete</a>
+    <a href="{{url_for('edit' , query=query) }}" style="margin-left: 15px; " class="btn btn-default btn-lg pull-right" role="button">Edit</a>
   <a href="/" class="btn btn-default btn-lg pull-right" role="button">Home</a>
 </h1> 
 </div>
@@ -109,7 +109,7 @@ img { width: 100%;  }
 <div class="img-wrapper"> <img src="{{i}}" /></div>
 {% endfor%}
 </div>
-<a href="{{url_for('delete' , query=query) }}" style="margin-left: 15px;" class="btn btn-default btn-lg pull-right" role="button">Delete</a>
+
 </div>
 </body>
 </html>
