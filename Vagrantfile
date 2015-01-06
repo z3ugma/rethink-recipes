@@ -10,8 +10,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
  dirname = File.basename(Dir.getwd)
  config.vm.hostname = dirname
 
- config.vm.network "forwarded_port", guest: 5000, host: 5005
- config.vm.network "forwarded_port", guest: 8080, host: 8085
+ config.vm.network "forwarded_port", guest: 5000, host: 5025
+ config.vm.network "forwarded_port", guest: 8080, host: 8025
+ config.vm.network "forwarded_port", guest: 9000, host: 9025
 
 $script = <<SCRIPT
 echo "Provisioning Flask, RethinkDB, Python imaging libraries"
@@ -30,9 +31,17 @@ sudo apt-get -y install rethinkdb
 sudo pip install PIL --upgrade
 sudo pip install -r /vagrant/requirements.txt
 
+cp -v /vagrant/recipes_flask.conf /etc/init/recipes_flask.conf
+cp -v /vagrant/recipes_rethinkdb.conf /etc/init/recipes_rethinkdb.conf
+
+
 sudo initctl emit vagrant-ready
 SCRIPT
 
 config.vm.provision "shell", inline: $script
+
+config.vm.provision "shell", inline: "export EDITOR=nano", privileged: false
+config.vm.provision "shell", inline: "(crontab -l 2>/dev/null; echo \"0 3 * * * rethinkdb dump -c localhost:28015 -f /vagrant/recipes_db_backup.tar.gz\") | crontab -", privileged: false
+
 
 end

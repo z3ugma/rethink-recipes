@@ -3,3 +3,4 @@ rethinkdb
 colorific
 translitcodec
 flask-wtf
+tornado

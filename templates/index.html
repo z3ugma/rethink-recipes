@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Recipes</title>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.js"></script>
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"></style>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+
+
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Ubuntu">
+  <style>
+
+  body {
+    font-family: 'Ubuntu', serif;
+    background-color: #A66FA6;
+
+}
+
+    .panel-primary{
+    		border-color: #609732;
+        font-size:150%;
+
+    }
+
+  .panel-primary > .panel-heading {
+		background-color: #609732;
+		border-color: #609732;
+
+  }
+
+  a {
+    color: #370037;
+  }
+
+   a:focus, a:hover {
+    color: #370037;
+  }
+
+</style>
+</head>
+<body>
+
+
+<div class="container">
+<div class="col-md-12">
+  <div class="header" style="background-color: #370037; color: #A66FA6; margin-bottom: 20px; padding: 20px 10px;">
+  <h1>Recipes
+    <a href="/add" class="btn btn-default btn-lg pull-right" role="button">Add</a></h1>
+</div>
+</div>
+<div class="col-md-12">
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h3 class="panel-title">Recipes</h3>
+    </div>
+    <div class="panel-body">
+      {% if not allrecipes %}
+      <h3> There are no recipes at the moment </h3>
+      <h1> <a href="/add"> -> Add a recipe</a></h1>
+
+      {% endif %}
+      <table class="table table-striped table-hover">
+        <tbody>
+        {% for i in allrecipes %}
+          <tr>
+            <td><a href="{{url_for("recipe", query=i['slug'])}}">{{i['title']}}</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+
+</body>
+</html>
