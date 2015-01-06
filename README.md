@@ -1,6 +1,8 @@
 rethink-recipes
 ===============================
-A lightweight, quick and no-frills recipe application. Its best feature is calculating a color palette dynamically based on the title of the recipe.
+A lightweight, quick and no-frills recipe application.
+It calculates a color palette dynamically based on the title of the recipe, and includes image search results matching the title
+Ingredients are automatically highlighted in the directions as well.
 
 Tornado webserver wrapping Flask application with a RethinkDB backend
 
