@@ -137,7 +137,7 @@ def add():
 
         slug = slugify(form.title.data)
 
-        recipe = { 'title': form.title.data, 'ingredients': [{'amount': " ".join(ingredient.split()[0:2]), 'what': " ".join(ingredient.split()[2:])} for ingredient in form.ingredients.data.split('\r\n')], 'directions': form.directions.data.split('\r\n'), 'urls': urls, 'slug': slug, 'avgcolors': [list(i) for i in rainbow]}
+        recipe = { 'title': form.title.data.title(), 'ingredients': [{'amount': " ".join(ingredient.split()[0:2]), 'what': " ".join(ingredient.split()[2:])} for ingredient in form.ingredients.data.split('\r\n')], 'directions': form.directions.data.split('\r\n'), 'urls': urls, 'slug': slug, 'avgcolors': [list(i) for i in rainbow]}
 
 
        
@@ -216,7 +216,7 @@ def edit(query):
 
         id = recipe['id']
 
-        recipe = { 'title': form.title.data, 'ingredients': [{'amount': " ".join(ingredient.split()[0:2]), 'what': " ".join(ingredient.split()[2:])} for ingredient in form.ingredients.data.split('\r\n')], 'directions': form.directions.data.split('\r\n'), 'urls': urls, 'slug': slug, 'avgcolors': [list(i) for i in rainbow]}
+        recipe = { 'title': form.title.data.title(), 'ingredients': [{'amount': " ".join(ingredient.split()[0:2]), 'what': " ".join(ingredient.split()[2:])} for ingredient in form.ingredients.data.split('\r\n')], 'directions': form.directions.data.split('\r\n'), 'urls': urls, 'slug': slug, 'avgcolors': [list(i) for i in rainbow]}
 
         recipe['ingredients'] = [i for i in recipe['ingredients'] if not i['what']=='']
         recipe['directions'] = [i for i in recipe['directions'] if not i=='']
