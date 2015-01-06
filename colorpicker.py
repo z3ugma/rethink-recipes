@@ -44,6 +44,9 @@ def slugify(text, delim=u'-'):
             result.append(word)
     return unicode(delim.join(result))
 
+def gettitle(recipe):
+    return recipe['title']
+
 from flask.ext.wtf import Form
 from wtforms.fields import TextField
 from wtforms.validators import Required
@@ -99,6 +102,12 @@ def teardown_request(exception):
         pass
 
 
+@app.route('/')
+def index():
+    allrecipes = list(r.table('recipes').run(g.rdb_conn))
+    allrecipes.sort(key=gettitle)
+    return render_template("index.html", allrecipes=allrecipes)
+
 @app.route('/favicon.ico')
 def favicon():
     abort(404)
@@ -137,7 +146,7 @@ def add():
 
         r.table('recipes').insert(recipe).run(g.rdb_conn)
 
-        return redirect(url_for('index', query=slug))
+        return redirect(url_for('recipe', query=slug))
 
     
          #r.table('recipes').get('de670bed-791d-41d0-97cb-1ceaf9ba54ac').update({'time_updated': r.now(), 'slug': "broccoli-cheese-soup", 'urls': urls, 'avgcolors': [list(i) for i in rainbow]}).run(g.rdb_conn)
@@ -146,7 +155,7 @@ def add():
 
 
 @app.route('/<query>')
-def index(query):
+def recipe(query):
     recipe = list(r.table('recipes').filter({'slug': query}).run(g.rdb_conn))
 
     if recipe:
@@ -162,7 +171,59 @@ def index(query):
 
     rainbow = [tuple(l) for l in recipe['avgcolors']]
 
-    return render_template("index.html", urls = recipe['urls'], avg=rainbow, ingredients = recipe['ingredients'], steps = steps, title=recipe['title'])
+    return render_template("recipes.html", urls = recipe['urls'], avg=rainbow, ingredients = recipe['ingredients'], steps = steps, title=recipe['title'], query=query)
+
+
+@app.route('/<query>/edit', methods = ['GET', 'POST'])
+def edit(query):
+
+
+    form = RecipeForm()
+    recipe = list(r.table('recipes').filter({'slug': query}).run(g.rdb_conn))
+
+    if recipe:
+        recipe = recipe[0]
+    else:
+        abort(404)
+
+    if request.method == 'GET':
+
+        form.ingredients.data = "\r\n".join([(i['amount'] + " " + i['what']) for i in recipe['ingredients']])
+        form.directions.data = "\r\n".join(i for i in recipe['directions'])
+        form.title.data = recipe['title']
+
+        return render_template("edit.html", form=form, recipe=recipe)
+
+    if request.method == 'POST' and form.validate():
+
+        lightness = []
+        rainbow = []
+        resp=[]
+        urls = get_gimages("+".join(form.title.data.split()))
+        for url in urls:
+            i = cStringIO.StringIO(urllib.urlopen(url).read())
+            quiche = colorific.extract_colors(i, max_colors=5)
+            resp.extend([each.value for each in quiche.colors])
+        resp = [(m,sqrt(0.299 * m[0]**2 + 0.587 * m[1]**2 + 0.114 * m[2]**2)) for m in resp]
+        lightness = sorted(resp,key=lambda x: x[1])
+        lightness = [i[0] for i in lightness]
+        lightness.sort(key=lambda tup: colorsys.rgb_to_hsv(tup[0],tup[1],tup[2])[2])
+        for each in chunks(lightness,10):
+            avg = tuple(map(lambda y: sum(y) / len(y), zip(*each)))
+            rainbow.append(avg)
+
+        slug = slugify(form.title.data)
+
+        id = recipe['id']
+
+        recipe = { 'title': form.title.data, 'ingredients': [{'amount': " ".join(ingredient.split()[0:2]), 'what': " ".join(ingredient.split()[2:])} for ingredient in form.ingredients.data.split('\r\n')], 'directions': form.directions.data.split('\r\n'), 'urls': urls, 'slug': slug, 'avgcolors': [list(i) for i in rainbow]}
+
+        recipe['ingredients'] = [i for i in recipe['ingredients'] if not i['what']=='']
+        recipe['directions'] = [i for i in recipe['directions'] if not i=='']
+
+        r.table('recipes').get(id).update(recipe).run(g.rdb_conn)
+
+        return redirect(url_for('recipe', query=slug))
 
 
 if __name__ == '__main__':

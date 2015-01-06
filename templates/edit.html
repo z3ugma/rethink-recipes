@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Edit {{recipe.title}}</title>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.js"></script>
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"></style>
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+
+
+	<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Ubuntu">
+
+	<style>
+	body {
+		font-family: 'Ubuntu', serif;
+
+	}
+	textarea {
+		-webkit-box-sizing: border-box;
+		-moz-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+		height:100%;
+	}
+	</style>
+</head>
+<body>
+	<div class="container">
+
+
+		<form action="" role="form" method="POST" name="add_task">
+			{{form.hidden_tag()}}
+
+			<div class="row">
+				<div class="col-md-12">
+					<h1>Edit {{recipe.title}}</h1>
+
+					<div class="panel panel-primary">
+						<div class="panel-heading">
+							<h3 class="panel-title">Title</h3>
+						</div>
+						<div class="panel-body">
+							{{form.title}}
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<div class="row">
+
+				<div class="col-md-3">
+					<div class="panel panel-primary">
+						<div class="panel-heading">
+							<h3 class="panel-title">Ingredients</h3>
+						</div>
+						<div class="panel-body" >
+							{{ form.ingredients(rows="10") }}
+						</div>
+					</div>
+				</div>
+				<div class="col-md-9">
+					<div class="panel panel-primary">
+						<div class="panel-heading">
+							<h3 class="panel-title"></h3> Directions </h3>
+						</div>
+						<div class="panel-body">
+							{{ form.directions(rows="10") }}
+						</div>
+					</div>
+				</div>
+
+				<input type="submit" value="Update Recipe" class="btn btn-default btn-md">
+				{% for error in form.errors.label %}
+				<span style="color: red;">{{ error }}</span>
+				{% endfor %}
+			</div>
+
+		</form>
+	</div>
+
+
+
+</body>
+</html>
